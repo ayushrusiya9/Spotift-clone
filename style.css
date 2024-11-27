@@ -164,23 +164,56 @@
 }
 
 .playbar{
-    position: absolute;
-    bottom: 0;
-    background-color: rgb(131, 137, 131);
-    width: 96%;
+    position: fixed;
+    bottom: 10px;
+    background-color: rgb(116, 124, 116);
+    width: 70vw;
     padding: 10px;
 }
 
 .songbuttons{
     display: flex;
+    align-items: center;
     justify-content: center;
     gap: 16px;
 }
 
 .songList{
     padding: 0px 11px;
+    height: 450px;
+    overflow: auto;
+    margin-bottom: 15px;
 }
 
 .songList ul li{
-    list-style: none;
+    /* list-style: none; */
+    list-style-type: decimal;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 34px;
+    cursor: pointer;
+    padding: 12px 0px;
+    border: 1px solid white;
+    margin: 10px;
+    padding: 7px;
+    border-radius: 5px;
 }
+
+.songList .info{
+    font-size: 12px;
+    width: 344px;
+}
+
+.playNow{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.playNow span{
+    font-size: 15px;
+    width: 64px;
+    padding: 12px;
+}
+

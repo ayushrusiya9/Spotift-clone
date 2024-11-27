@@ -1,69 +1,77 @@
-.border{
+.border {
     border: 2px solid red;
 }
 
-.flex{
+.flex {
     display: flex;
 }
 
-.justify-centre{
+.justify-centre {
     justify-content: center;
 }
 
-.item-centre{
+.item-centre {
     align-items: center;
 }
 
-.bg-black{
+.bg-black {
     background-color: black;
-    color:white;
+    color: white;
 }
 
-.invert{
+.invert {
     filter: invert(1);
 }
 
-.bg-grey{
+.bg-grey {
     background-color: #121212;
 }
 
-.rounded{
+.rounded {
     border-radius: 8px;
 }
 
-.m-1{
+.m-1 {
     margin: 5px;
 }
 
-.p-1{
+.p-1 {
     padding: 10px;
 }
 
-    /* Apply global styles */
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background-color: #121212;
-        color: #ffffff;
-        overflow-y: scroll; /* Ensure scrollbar is visible */
-        scroll-behavior: smooth; /* Smooth scrolling effect */
-      }
-  
-      /* Custom scrollbar styling */
-      ::-webkit-scrollbar {
-        width: 10px; /* Width of the scrollbar */
-      }
-  
-      ::-webkit-scrollbar-track {
-        background: #1e1e1e; /* Background of the scrollbar track */
-        border-radius: 5px; /* Rounded corners */
-      }
-  
-      ::-webkit-scrollbar-thumb {
-        background: #575757; /* Scrollbar thumb color */
-        border-radius: 5px; /* Rounded corners */
-      }
-  
-      ::-webkit-scrollbar-thumb:hover {
-        background: #838383; /* Hover effect for scrollbar thumb */
-      }
+/* Apply global styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+    overflow-y: scroll;
+    /* Ensure scrollbar is visible */
+    scroll-behavior: smooth;
+    /* Smooth scrolling effect */
+}
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+    width: 10px;
+    /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+    background: #1e1e1e;
+    /* Background of the scrollbar track */
+    border-radius: 5px;
+    /* Rounded corners */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #575757;
+    /* Scrollbar thumb color */
+    border-radius: 5px;
+    /* Rounded corners */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #838383;
+    /* Hover effect for scrollbar thumb */
+}

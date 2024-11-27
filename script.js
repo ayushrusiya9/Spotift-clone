@@ -1,74 +1,20 @@
-// // console.log("Let's write a code");
-
-// async function getsongs() {
-//     try{
-//         // Fetch the directory contents
-//         let a = await fetch("http://127.0.0.1:5500/songs/");
-//         let response = await a.text();
-
-//         // Parse the directory contents
-//         let div = document.createElement("div");
-//         div.innerHTML = response;
-//         let as = div.getElementsByTagName("a");
-
-//         let songs = [];
-//         for (let index = 0; index < as.length; index++) {
-//             const element = as[index];
-//             if (element.href.endsWith(".mp3")) {
-//                 songs.push(element.href); // Store song URL in the array
-//             }
-//         }
-
-//         // Save to sessionStorage
-//         sessionStorage.setItem("songs", JSON.stringify(songs));
-//         console.log("Songs:", songs);
-//     } catch (error) {
-//         console.error("Error fetching songs:", error);
-//     }
-// }
-
-// async function main(){
-//     //get the song of all songs
-//     let songs = await getsongs()
-//     console.log(songs); 
-    
-//     let songUL = document.querySelector(".songList").getElementsByTagName("ul")[0]
-//     for (const song of songs) {
-//        songUL.innerHTML = songUL.innerHTML + song
-//     }
-
-//     //songs the first song
-//     var audio = new Audio(songs[0]);
-//     audio.play();
-
-//     audio.addEventListener("ontimeupdate",() => {
-//         let duration = audio.duration;
-//         console.log(duration)
-//         //the duration variable now holds the duration (in second ) of the audio clip
-//     });
-// }
-// main()
-
-// getsongs();
-
 console.log("Let's write a code");
 
 async function getsongs() {
     try {
         // Fetch the directory contents
-        let a = await fetch("http://127.0.0.1:5500/songs/");
-        let response = await a.text();
+        let response = await fetch("http://127.0.0.1:5500/songs/");
+        let text = await response.text();
 
         // Parse the directory contents
         let div = document.createElement("div");
-        div.innerHTML = response;
-        let as = div.getElementsByTagName("a");
+        div.innerHTML = text;
+        let links = div.getElementsByTagName("a");
 
         let songs = [];
-        for (let index = 0; index < as.length; index++) {
-            const element = as[index];
-            if (element.href.endsWith(".mp3")) {
-                songs.push(element.href); // Store song URL in the array
+        for (let link of links) {
+            if (link.href.endsWith(".mp3")) {
+                songs.push(link.href); // Store song URL in the array
             }
         }
 
@@ -80,6 +26,22 @@ async function getsongs() {
         console.error("Error fetching songs:", error);
         return []; // Return an empty array in case of an error
     }
+}
+
+function parseSongDetails(songUrl) {
+    // Extract the file name from the URL
+    let fileName = decodeURIComponent(songUrl.split("/").pop());
+
+    // Remove the file extension
+    let baseName = fileName.replace(/\.mp3$/, "");
+
+    // Split into artist and song title (assuming "Artist - Song.mp3" format)
+    let [artist, songName] = baseName.split(" - ");
+
+    return {
+        artist: artist || "Unknown Artist",
+        name: songName || baseName
+    };
 }
 
 async function main() {
@@ -99,37 +61,48 @@ async function main() {
     }
 
     // Add songs to the song list
-    songUL.innerHTML = ""; // Clear existing content
-    songs.forEach((song, index) => {
+    songs.forEach((songUrl) => {
         let li = document.createElement("li");
-        
-        // Decode the song name and remove path
-        let songName = decodeURIComponent(song.split("/").pop());
-        li.textContent = `${index + 1}. ${songName}`; // Add numbering to each song
-        li.dataset.url = song; // Store the song URL in a custom attribute
+
+        // Parse song details
+        let { name, artist } = parseSongDetails(songUrl);
+
+        // Build the song list item
+        li.innerHTML = `
+            <img class="invert" src="music.svg" alt="Music Icon">
+            <div class="info">
+                <div>${artist}</div>
+                <div>${name}</div>
+            </div>
+            <div class="playNow">
+                <span>Play Now</span>
+                <img class="invert" src="play.svg" alt="Play Icon">
+            </div>
+        `;
+        li.dataset.url = songUrl; // Store the song URL in a custom attribute
         songUL.appendChild(li);
     });
 
     // Play the first song
-    var audio = new Audio(songs[0]);
+    let audio = new Audio(songs[0]);
     audio.play();
 
     // Update duration on time update
     audio.addEventListener("timeupdate", () => {
-        let duration = audio.duration;
-        console.log("Duration (seconds):", duration);
+        console.log("Current Time:", audio.currentTime);
+        console.log("Duration:", audio.duration);
     });
 
     // Handle song click to play
     songUL.addEventListener("click", (e) => {
-        if (e.target.tagName === "LI") {
-            let songURL = e.target.dataset.url;
+        let target = e.target.closest("li");
+        if (target) {
+            let songURL = target.dataset.url;
             audio.src = songURL;
             audio.play();
         }
     });
 }
 
-
-getsongs()
 main();
+
