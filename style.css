@@ -193,18 +193,24 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 34px;
+    gap: 20px;
     cursor: pointer;
-    padding: 12px 0px;
+    padding: 0px 0px;
     border: 1px solid white;
     margin: 10px;
     padding: 7px;
     border-radius: 5px;
+    overflow: hidden;
 }
 
 .songList .info{
+    filter: invert(1);
     font-size: 12px;
     width: 344px;
+}
+
+.songList .songtime{
+    filter: invert(1);
 }
 
 .playNow{
@@ -238,4 +244,19 @@
     position: relative;
     bottom: 6px;
     transition: left 0.5s;
+}
+
+.songinfo, .songtime {
+    color: black;
+}
+
+.songbuttons img{
+    cursor: pointer;
+}
+
+.abovebar {
+    display: flex;
+    justify-content: space-between;
+    /* margin: 20px 0; */
+    width: 100%;
 }
