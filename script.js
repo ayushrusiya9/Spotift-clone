@@ -1,3 +1,4 @@
+// Existing Variables
 let audio = new Audio();
 let currentPlayingIndex = null;
 let isPlayingFromSeekbar = false;
@@ -25,6 +26,17 @@ async function getsongs() {
     }
 }
 
+// Function to update seekbar dynamically
+function updateSeekbar() {
+    const seekbar = document.getElementById("seekbar");
+    if (audio.duration) {
+        // Calculate percentage of playback progress
+        const percentage = (audio.currentTime / audio.duration) * 100;
+        seekbar.value = percentage; // Update the seekbar value
+    }
+}
+
+// Main function
 async function main() {
     const songs = await getsongs();
     if (songs.length === 0) {
@@ -105,7 +117,16 @@ async function main() {
     // Update song time and seekbar as the song plays
     audio.addEventListener("timeupdate", () => {
         updateSongTime();
-        updateSeekbar();
+        updateSeekbar(); // Automatically updates seekbar as song progresses
+    });
+
+    // Handle manual seekbar input
+    const seekbar = document.getElementById("seekbar");
+    seekbar.addEventListener("input", () => {
+        if (audio.duration) {
+            const seekTime = (seekbar.value / 100) * audio.duration;
+            audio.currentTime = seekTime; // Update playback position
+        }
     });
 
     // Reset play/pause buttons when song ends
@@ -117,48 +138,31 @@ async function main() {
         }
     });
 
-    // Handle seekbar drag (click and move)
-    const seekbar = document.querySelector(".seekbar");
-    const circle = document.querySelector(".seekbar .circle");
-    
-    circle.addEventListener("mousedown", (e) => {
-        isPlayingFromSeekbar = true;
-        const seekbarWidth = seekbar.offsetWidth;
-
-        // Prevent text selection while dragging
-        e.preventDefault();
-
-        // Update the audio time based on the seekbar position
-        document.addEventListener("mousemove", onSeekbarMouseMove);
-        document.addEventListener("mouseup", onSeekbarMouseUp);
-
-        function onSeekbarMouseMove(e) {
-            if (isPlayingFromSeekbar) {
-                let newX = e.clientX - seekbar.offsetLeft;
-                if (newX < 0) newX = 0;
-                if (newX > seekbarWidth) newX = seekbarWidth;
-                circle.style.left = newX + "px";
-                const seekTime = (newX / seekbarWidth) * audio.duration;
-                audio.currentTime = seekTime;
-            }
-        }
-
-        function onSeekbarMouseUp() {
-            isPlayingFromSeekbar = false;
-            document.removeEventListener("mousemove", onSeekbarMouseMove);
-            document.removeEventListener("mouseup", onSeekbarMouseUp);
-        }
+    //add an event listener for hamburger
+    document.querySelector(".hamburger").addEventListener("click", ()=> {
+        document.querySelector(".left").style.left = "0";
     });
 
-    //add an event listener for hamburger
-    document.querySelector(".hamburger").addEventListener("click", ()=>{
-        document.querySelector(".left").style.left = "0"
-    } )
-
     //add event listener for close
-    document.querySelector(".close").addEventListener("click", ()=>{
-        document.querySelector(".left").style.left = "-120%"
-    })
+    document.querySelector(".close").addEventListener("click", ()=> {
+        document.querySelector(".left").style.left = "-120%";
+    });
+
+    // Add an event to volume
+// Add event listener to volume slider for drag and touch input
+document.querySelector(".range input").addEventListener("input", (e) => {
+    console.log("Setting volume to", e.target.value, "/ 100");
+    audio.volume = parseInt(e.target.value) / 100; // Set the audio volume
+
+    const volumeImg = document.querySelector(".volume > img");
+    if (audio.volume > 0) {
+        volumeImg.src = volumeImg.src.replace("mute.svg", "volume.svg");
+    } else {
+        volumeImg.src = volumeImg.src.replace("volume.svg", "mute.svg");
+    }
+});
+
+
 }
 
 // Handle play/pause logic
@@ -216,12 +220,12 @@ function updateSongTime() {
     document.querySelector(".songtime").textContent = `${currentTime} / ${duration}`;
 }
 
-// Update the seekbar position
-function updateSeekbar() {
-    const seekbar = document.querySelector(".seekbar");
-    const seekbarWidth = seekbar.offsetWidth;
-    const percentage = (audio.currentTime / audio.duration) * 100;
-    document.querySelector(".seekbar .circle").style.left = `${(percentage / 100) * seekbarWidth}px`;
+// Parse song details from URL
+function parseSongDetails(songUrl) {
+    const fileName = decodeURIComponent(songUrl.split("/").pop());
+    const baseName = fileName.replace(/\.mp3$/, "");
+    const [artist, songName] = baseName.split(" - ");
+    return { artist: artist || "Unknown Artist", name: songName || baseName };
 }
 
 // Format the time as MM:SS
@@ -229,14 +233,6 @@ function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
-}
-
-// Parse song details from URL
-function parseSongDetails(songUrl) {
-    const fileName = decodeURIComponent(songUrl.split("/").pop());
-    const baseName = fileName.replace(/\.mp3$/, "");
-    const [artist, songName] = baseName.split(" - ");
-    return { artist: artist || "Unknown Artist", name: songName || baseName };
 }
 
 // Initialize

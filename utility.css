@@ -75,3 +75,8 @@ body {
     background: #838383;
     /* Hover effect for scrollbar thumb */
 }
+
+/* seekbar */
+#seekbar {
+    transition: all 0.5s ease; /* Smooth transition for seekbar changes */
+}
